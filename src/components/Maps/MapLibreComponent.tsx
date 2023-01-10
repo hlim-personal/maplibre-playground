@@ -7,6 +7,8 @@ import { useSelector } from 'react-redux';
 import { MapStyle } from './MapStyle';
 import GeoApi from '../../data/geo/Api';
 import { libreDataState } from '../../data/geo/Reducer';
+import _ from 'lodash'
+import ControlPanel from './ControlPanel/ControlPanel';
 
 interface IPopupData {
     label: string;
@@ -25,6 +27,86 @@ const MapLibreComponent = () => {
 
     const [popupData, setPopupData] = useState<IPopupData | null>(null);
     const data = useSelector(libreDataState);
+    const [colors, setColors] = useState([
+        {
+            name: 'Basketball Hoop',
+            color: '#FF4500'
+        },
+        {
+            name: 'Goal Posts',
+            color: '#FFD700'
+        },
+        {
+            name: "Netball Hoop",
+            color: "#DAA520"
+        },
+        {
+            name: "Tennis Practice Wall",
+            color: "#808000"
+        },
+        {
+            name: "Skateboard Ramp",
+            color: "#7CFC00"
+        },
+        {
+            name: "Cricket Net",
+            color: "#228B22"
+        }, 
+        {
+            name: "Volleyball Net",
+            color: "#00FFFF"
+        },
+        {
+            name: "Softball Net",
+            color: "#1E90FF"
+        },
+        {
+            name: "Skateboard Rail",
+            color: "#87CEFA"
+        },
+        {
+            name: "Skateboard Steps",
+            color: "#4B0082"
+        },
+        {
+            name: "Skateboard Bowl",
+            color: "#9370DB"
+        },
+        {
+            name: "BMX Ramp",
+            color: "#FF00FF"
+        },
+        {
+            name: "Tennis Net",
+            color: "#FAEBD7"
+        },
+        {
+            name: "BMX See-Saw",
+            color: "#800000"
+        },
+        {
+            name: "Frisbee Basket",
+            color: "#A9A9A9"
+        },
+        {
+            name: "Table Tennis Table",
+            color: "#FFE4E1"
+        },
+        {
+            name: "unknown",
+            color: "#A0522D" 
+        },
+        {
+            name: "Not in list",
+            color: "#F5FFFA"
+        },
+    ])
+
+    if (data !== null) {
+        const uniqueTypes = data.features.map((item:any) => item.properties.Type)
+            .filter((value: any, index, self) => self.indexOf(value) === index );
+    }
+
     const equipmentLayerId = 'equipmentLayer';
 
     useEffect(() => {
@@ -57,11 +139,19 @@ const MapLibreComponent = () => {
         }
     }
 
+    const renderColor = (featureType : string) => {
+        const colorIndex = colors.findIndex((element : { name: string, color: string}) => {
+           return (element.name === featureType)
+        })
+        return (colors[colorIndex].color)
+    }
+
     return (
         <div style={{
             display: 'flex',
             flexGrow: 1
         }}>
+            <ControlPanel colors={colors} setColors={setColors}/>
             <Map
                 mapStyle={MapStyle}
                 ref={mapRef}
@@ -82,7 +172,7 @@ const MapLibreComponent = () => {
                             id={equipmentLayerId}
                             type='circle'
                             paint={{
-                                'circle-color': 'red',
+                                'circle-color': ['case', ["boolean", ["==", ["get", "Type"], "Skateboard Rail"], false], renderColor("Skateboard Rail"), 'green'],
                                 'circle-radius': 5,
                                 'circle-stroke-color': 'black',
                                 'circle-stroke-width': .5
