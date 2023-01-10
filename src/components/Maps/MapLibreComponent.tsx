@@ -172,6 +172,12 @@ const MapLibreComponent = () => {
                             id={equipmentLayerId}
                             type='circle'
                             paint={{
+                                // 'circle-color': 
+                                // ['case', 
+                                // ["boolean", ["==", ["get", "Type"], "Skateboard Rail"], false], 
+                                // renderColor("Skateboard Rail"),
+                                // ["boolean", ["==", ["get", "Type"], "Basketball Hoop"]], 
+                                //  renderColor("Basketball Hoop"), false, 'green'],
                                 'circle-color': ['case', ["boolean", ["==", ["get", "Type"], "Skateboard Rail"], false], renderColor("Skateboard Rail"), 'green'],
                                 'circle-radius': 5,
                                 'circle-stroke-color': 'black',
