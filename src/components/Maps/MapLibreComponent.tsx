@@ -49,8 +49,8 @@ const MapLibreComponent = () => {
         }
     }, [data])
 
-    useMemo(() => {
-        if (data!== null) {
+    useEffect(() => {
+        if (!!data) {
             const uniqueCategories = data.features.map((item:any) => item.properties[displayProperty])
                 .filter((value: any, index, self) => self.indexOf(value) === index );
                 

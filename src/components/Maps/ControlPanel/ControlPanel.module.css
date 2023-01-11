@@ -11,11 +11,18 @@
     position: absolute;
     background-color: white;
     border-radius: 5px;
+    gap: 1rem;
+}
+
+.featuresBox {
+    width: 100%;
 }
 
 .featureColorLines {
     display: flex;
     justify-content: space-between;
+    margin-bottom: .5rem;
+    width: 90%;
 }
 
 .feature {

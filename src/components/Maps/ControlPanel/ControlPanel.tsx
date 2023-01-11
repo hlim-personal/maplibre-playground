@@ -1,14 +1,14 @@
 import React from 'react'
 import styles from './ControlPanel.module.css'
 
-type Props = {
+interface ControlPanelProps {
     displayProperty: string,
     componentData: any,
     setComponentData: (value: any) => void,
     symbology: any
 }
 
-const ControlPanel = (props: Props) => {
+const ControlPanel = (props: ControlPanelProps) => {
     const { displayProperty, componentData, setComponentData, symbology } = props
 
     const handleChange = (e) => {
