@@ -2,21 +2,32 @@ import React from 'react'
 import styles from './ControlPanel.module.css'
 
 type Props = {
-    colors: any,
-    setColors: (value: any) => void;
+    displayProperty: string,
+    componentData: any,
+    setComponentData: (value: any) => void,
+    symbology: any
 }
 
 const ControlPanel = (props: Props) => {
-    const { colors, setColors } = props
+    const { displayProperty, componentData, setComponentData, symbology } = props
 
     const handleChange = (e) => {
-        const updatedColors :any = colors.map(element => {
-            if (element.name == e.target.name) {
-                return {...element, color: e.target.value}
+        const updatedFeatures :any = componentData.features.map(d => {
+            let updatedProperties = {}
+            if (d.properties[displayProperty] == e.target.name) {
+                updatedProperties = {...d.properties, symbology: e.target.value}   
+            } else {
+                updatedProperties = d.properties
             }
-            return element
+            return (
+                {
+                    ...d,
+                    properties: updatedProperties
+                }
+            )
         })
-        setColors(updatedColors) 
+
+        setComponentData({...componentData, features: updatedFeatures}) // [
     }
 
     return (
@@ -26,11 +37,11 @@ const ControlPanel = (props: Props) => {
             </div>
             <div className={styles.featuresBSox}>
                  {
-                    colors.map((element: {name: string, color: string})=> {
+                    symbology.map((d: any)=> {
                         return (
                             <div className={styles.featureColorLines}>
-                                <div className={styles.feature}>{element.name}</div>
-                                <input type="color" name={element.name} value={element.color} onChange={handleChange}/>
+                                <div className={styles.feature}>{d.category}</div>
+                                <input type="color" name={d.category} value={d.color} onChange={handleChange}/>
                             </div>
                         )
                     })
