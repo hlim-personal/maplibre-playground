@@ -55,7 +55,9 @@ const DeckComponent = () => {
           parseInt(result[3], 16)
         ] : null;
     }
-      
+    
+    
+
     const colors = (colorbrewer[colorScheme][numClasses+1]).map(d => hexToRgb(d));
     const COLOR_SCALE:any = scaleThreshold<number, number[]>()
             .domain(domain)
@@ -67,12 +69,6 @@ const DeckComponent = () => {
                 console.log('loaded data')
             })
         } else {
-            const featureArr = rawData.map(d => d[displayedFeature]);
-            const series1 = new geostats(featureArr);
-            const buckets = getBuckets(series1);
-            const intBuckets = buckets.map(d => Math.floor(d));
-            setDomain(intBuckets);
-
             const geoJsonFeatures = rawData.map(d => {
                 return {
                     type: 'Feature',
@@ -81,7 +77,7 @@ const DeckComponent = () => {
                         coordinates: [d.pickup_longitude, d.pickup_latitude]
                     },
                     properties: {
-                        total: d.total_amount
+                        total: d[displayedFeature]
                     }
                 }
             });
@@ -91,7 +87,17 @@ const DeckComponent = () => {
                 features: geoJsonFeatures
             })
         }
-    }, [rawData, colorScheme, currentClassification, numClasses])
+    }, [rawData])
+
+    useEffect(() => {
+        if (!!data) {
+            const featureArr = rawData.map(d => d[displayedFeature]);
+            const series1 = new geostats(featureArr);
+            const buckets = getBuckets(series1);
+            const intBuckets = buckets.map(d => Math.floor(d));
+            setDomain(intBuckets);
+        }      
+    }, [currentClassification])
 
     const dataLayer = useMemo(() => {
         if (!data) {
@@ -105,6 +111,9 @@ const DeckComponent = () => {
             filled: true,
             pointRadiusMinPixels: 2,
             getFillColor: (d:any) => {return (COLOR_SCALE(d.properties.total))},
+            updateTriggers: {
+                getFillColor: [colorScheme, currentClassification, numClasses]
+            }
         })
     }, [data, colorScheme, currentClassification, numClasses])
     
