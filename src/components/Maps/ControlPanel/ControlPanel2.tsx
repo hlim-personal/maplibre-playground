@@ -31,19 +31,7 @@ const ControlPanel2 = (props: ControlPanelProps) => {
                 Data Vis Options
             </div>
             <div className={Styles.featuresBox}>
-                    <div className={Styles.feature}>Number of data classes:</div>
-                    <select name="numClasses" onChange={handleChange}>
-                        <option value="2">3</option>
-                        <option value="5">6</option>
-                        <option value="8">9</option>
-                    </select>
-                    {/* <div className={Styles.feature}>Number of data classes:</div>
-                    <select name="classification" onChange={handleChange}>
-                        <option value="stdDeviation">3</option>
-                        <option value="5">6</option>
-                        <option value="8">9</option>
-                    </select> */}
-                    <div className={Styles.feature}>Select Colour Scheme</div>
+            <div className={Styles.feature}>Select Colour Scheme</div>
                     <div className={Styles.colorsBox}>
                         <div className={Styles.colorband} onClick={() => setColorScheme('YlGnBu')}>
                         {
@@ -76,10 +64,19 @@ const ControlPanel2 = (props: ControlPanelProps) => {
                         }
                         </div>
                     </div>
-
-                    
-                        
-                        
+                    <div className={Styles.feature}>Number of data classes:</div>
+                    <select name="numClasses" onChange={handleChange}>
+                        <option value="2">3</option>
+                        <option value="5">6</option>
+                        <option value="8">9</option>
+                    </select>
+                    <div className={Styles.feature}>Classification Method:</div>
+                    <select name="classification" onChange={handleChange}>
+                        <option value="stdDeviation">Standard Deviation</option>
+                        <option value="eqInterval">Equal Interval</option>
+                        <option value="quantile">Quantile</option>
+                        <option value="arithmeticProgression">Arithmetic Progression</option>
+                    </select>
                     
             </div>
         </div>

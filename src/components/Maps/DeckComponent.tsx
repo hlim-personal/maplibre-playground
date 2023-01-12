@@ -30,8 +30,7 @@ const DeckComponent = () => {
     const [numClasses, setNumClasses] = useState<number>(8);
     const [colorScheme, setColorScheme] = useState<string>('YlOrRd');
     const [currentClassification, setCurrentClassification] = useState<any>('stdDeviation');
-    const [domain, setDomain] = useState<any>([1, 100]);
-    console.log(numClasses)
+    const [domain, setDomain] = useState<any>([1, 100]);  
       
     const getBuckets = (series) => {
         switch(currentClassification) {
@@ -92,10 +91,10 @@ const DeckComponent = () => {
                 features: geoJsonFeatures
             })
         }
-    }, [rawData])
+    }, [rawData, colorScheme, currentClassification, numClasses])
 
     const dataLayer = useMemo(() => {
-        if (!data || !domain) {
+        if (!data) {
             return null;
         }        
 
@@ -105,10 +104,10 @@ const DeckComponent = () => {
             pointType: 'circle',      
             filled: true,
             pointRadiusMinPixels: 2,
-            getFillColor: (d:any) => COLOR_SCALE(d.properties.total),
+            getFillColor: (d:any) => {return (COLOR_SCALE(d.properties.total))},
         })
     }, [data, colorScheme, currentClassification, numClasses])
-
+    
     return (
         <div style={{
             display: 'flex',
