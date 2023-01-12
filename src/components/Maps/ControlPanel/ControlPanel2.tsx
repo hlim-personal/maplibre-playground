@@ -2,8 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Styles from './ControlPanel.module.css';
 import colorbrewer from 'colorbrewer';
 
-interface Props {
-    colors: any[] | null;
+interface ControlPanelProps {
     setColorScheme: any;
     currentClassification: string;
     setCurrentClassification: (value: string) => void;
@@ -11,8 +10,8 @@ interface Props {
     setNumClasses: (value: number) => void;
 }
 
-const ControlPanel2 = (props: Props) => {
-    const { colors, setColorScheme, currentClassification, setCurrentClassification, numClasses, setNumClasses } = props;
+const ControlPanel2 = (props: ControlPanelProps) => {
+    const { setColorScheme, currentClassification, setCurrentClassification, numClasses, setNumClasses } = props;
 
     const colorset1 = colorbrewer['YlGnBu'][9];
     const colorset2 = colorbrewer['YlOrRd'][9];
