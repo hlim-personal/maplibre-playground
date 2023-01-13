@@ -1,20 +1,20 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { HeatmapLayer } from '@deck.gl/aggregation-layers/typed';
 import { GeoJsonLayer } from '@deck.gl/layers/typed';
+import colorbrewer from 'colorbrewer';
+import { scaleThreshold } from 'd3-scale';
+import geostats from 'geostats';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Map, MapRef, NavigationControl } from 'react-map-gl';
 import { useSelector } from 'react-redux';
+import ControlPanel2 from './ControlPanel/ControlPanel2';
 import DeckGlOverlay from './DeckGlOverlay';
 import { MapStyle } from './MapStyle';
 import GeoApi from '../../data/geo/Api';
-import SymbologyApi from '../../data/symbology/Api';
 import { deckDataState } from '../../data/geo/Reducer';
-import { numClassesState, colorSchemeState, currentClassificationState, dataArrayState, domainState, colorsState } from '../../data/symbology/Reducer';
-import { scaleThreshold } from 'd3-scale';
-import geostats from 'geostats'
-import colorbrewer from 'colorbrewer';
-import ControlPanel2 from './ControlPanel/ControlPanel2';
+import SymbologyApi from '../../data/symbology/Api';
+import { colorSchemeState, colorsState, currentClassificationState, dataArrayState, domainState, numClassesState } from '../../data/symbology/Reducer';
 
 const DeckComponent = () => {
     const mapRef = useRef<MapRef>(null);
@@ -40,7 +40,7 @@ const DeckComponent = () => {
     // const [colorScheme, setColorScheme] = useState<string>('YlOrRd');
     // const [currentClassification, setCurrentClassification] = useState<string>('stdDeviation');
     // const [domain, setDomain] = useState<any>([1, 100]);  
-      
+
     // const getBuckets = (series) => {
     //     switch(currentClassification) {
     //         case 'eqInterval':
@@ -66,9 +66,9 @@ const DeckComponent = () => {
     // }
     // const colors = (colorbrewer[colorScheme][numClasses+1]).map(d => hexToRgb(d));
 
-    const COLOR_SCALE:any = scaleThreshold<number, number[]>()
-            .domain(domain)
-            .range(colors);
+    const COLOR_SCALE: any = scaleThreshold<number, number[]>()
+        .domain(domain)
+        .range(colors);
 
     useEffect(() => {
         if (!rawData) {
@@ -97,35 +97,35 @@ const DeckComponent = () => {
     }, [rawData])
 
     useEffect(() => {
-        if (!!data) {
+        if (!!rawData) {
             const featureArr = rawData.map(d => d[displayedFeature]);
             SymbologyApi.setDataArray(featureArr)
-            SymbologyApi.setDomain()
+            // SymbologyApi.setDomain()
             // const series1 = new geostats(featureArr);
             // const buckets = getBuckets(series1);
             // const intBuckets = buckets.map(d => Math.floor(d));
             // setDomain(buckets);
-        }      
-    }, [currentClassification])
+        }
+    }, [rawData, currentClassification])
 
     const dataLayer = useMemo(() => {
         if (!data) {
             return null;
-        }        
+        }
 
         return new GeoJsonLayer({
             id: 'geoJsonLayer',
             data: data,
-            pointType: 'circle',      
+            pointType: 'circle',
             filled: true,
             pointRadiusMinPixels: 2,
-            getFillColor: (d:any) => {return (COLOR_SCALE(d.properties.total))},
+            getFillColor: (d: any) => { return (COLOR_SCALE(d.properties.total)) },
             updateTriggers: {
                 getFillColor: [colorScheme, currentClassification, numClasses]
             }
         })
     }, [data, colorScheme, currentClassification, numClasses])
-    
+
     return (
         <div style={{
             display: 'flex',

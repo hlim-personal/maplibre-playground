@@ -14,12 +14,15 @@ const Api = {
     setDataArray: (dataArray: number[]) => {
         store.dispatch(SymbologyActions.setDataArray(dataArray));
     },
-    setDomain: () => {
-        store.dispatch(SymbologyActions.setDomain());
-    },
-    setColors: () => {
-        store.dispatch(SymbologyActions.setColors());
+    updateParameter: (newParam) => {
+        store.dispatch(SymbologyActions.setParameter(newParam))
     }
+    // setDomain: () => {
+    //     store.dispatch(SymbologyActions.setDomain());
+    // },
+    // setColors: () => {
+    //     store.dispatch(SymbologyActions.setColors());
+    // }
 }
 
 export default Api;
