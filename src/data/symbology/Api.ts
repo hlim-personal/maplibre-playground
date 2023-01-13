@@ -11,11 +11,14 @@ const Api = {
     setCurrentClassification: (currentClassification: string) => {
         store.dispatch(SymbologyActions.setCurrentClassification(currentClassification));
     },
-    setDomain: (series: number[]) => {
-        store.dispatch(SymbologyActions.setDomain(series));
+    setDataArray: (dataArray: number[]) => {
+        store.dispatch(SymbologyActions.setDataArray(dataArray));
     },
-    setColors: (colors: number[][]) => {
-        store.dispatch(SymbologyActions.setColors(colors));
+    setDomain: () => {
+        store.dispatch(SymbologyActions.setDomain());
+    },
+    setColors: () => {
+        store.dispatch(SymbologyActions.setColors());
     }
 }
 

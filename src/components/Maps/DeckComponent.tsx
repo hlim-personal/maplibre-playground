@@ -10,7 +10,7 @@ import { MapStyle } from './MapStyle';
 import GeoApi from '../../data/geo/Api';
 import SymbologyApi from '../../data/symbology/Api';
 import { deckDataState } from '../../data/geo/Reducer';
-import { numClassesState, colorSchemeState, currentClassificationState, domainState, colorsState } from '../../data/symbology/Reducer';
+import { numClassesState, colorSchemeState, currentClassificationState, dataArrayState, domainState, colorsState } from '../../data/symbology/Reducer';
 import { scaleThreshold } from 'd3-scale';
 import geostats from 'geostats'
 import colorbrewer from 'colorbrewer';
@@ -32,9 +32,10 @@ const DeckComponent = () => {
     const currentClassification = useSelector(currentClassificationState);
     const domain = useSelector(domainState);
     const colors = useSelector(colorsState);
+    const dataArray = useSelector(dataArrayState);
     const [data, setData] = useState<any>(null);
     const [displayedFeature, setDisplayedFeature] = useState<string>('total_amount');
-    console.log(numClasses, colorScheme, currentClassification, domain, colors);
+    console.log(numClasses, colorScheme, currentClassification, dataArray);
     // const [numClasses, setNumClasses] = useState<number>(8);
     // const [colorScheme, setColorScheme] = useState<string>('YlOrRd');
     // const [currentClassification, setCurrentClassification] = useState<string>('stdDeviation');
@@ -98,7 +99,8 @@ const DeckComponent = () => {
     useEffect(() => {
         if (!!data) {
             const featureArr = rawData.map(d => d[displayedFeature]);
-            SymbologyApi.setDomain(featureArr)
+            SymbologyApi.setDataArray(featureArr)
+            SymbologyApi.setDomain()
             // const series1 = new geostats(featureArr);
             // const buckets = getBuckets(series1);
             // const intBuckets = buckets.map(d => Math.floor(d));
