@@ -1,17 +1,18 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Styles from './ControlPanel.module.css';
 import colorbrewer from 'colorbrewer';
+import SymbologyApi from '../../../data/symbology/Api';
 
-interface ControlPanelProps {
-    setColorScheme: any;
-    currentClassification: string;
-    setCurrentClassification: (value: string) => void;
-    numClasses: number;
-    setNumClasses: (value: number) => void;
-}
+// interface ControlPanelProps {
+//     setColorScheme: any;
+//     currentClassification: string;
+//     setCurrentClassification: (value: string) => void;
+//     numClasses: number;
+//     setNumClasses: (value: number) => void;
+// }
 
-const ControlPanel2 = (props: ControlPanelProps) => {
-    const { setColorScheme, currentClassification, setCurrentClassification, numClasses, setNumClasses } = props;
+const ControlPanel2 = () => {
+    // const { setColorScheme, currentClassification, setCurrentClassification, numClasses, setNumClasses } = props;
 
     const colorset1 = colorbrewer['YlGnBu'][9];
     const colorset2 = colorbrewer['YlOrRd'][9];
@@ -19,9 +20,9 @@ const ControlPanel2 = (props: ControlPanelProps) => {
 
     const handleChange = (e: any) => {
         if (e.target.name === 'numClasses') {
-            setNumClasses(Number(e.target.value))
+            SymbologyApi.setNumClasses(Number(e.target.value))
         } else if (e.target.name === 'classification') {
-            setCurrentClassification(e.target.value)
+            SymbologyApi.setCurrentClassification(e.target.value)
         }
     }
 
@@ -33,7 +34,7 @@ const ControlPanel2 = (props: ControlPanelProps) => {
             <div className={Styles.featuresBox}>
             <div className={Styles.feature}>Select Colour Scheme</div>
                     <div className={Styles.colorsBox}>
-                        <div className={Styles.colorband} onClick={() => setColorScheme('YlGnBu')}>
+                        <div className={Styles.colorband} onClick={() => SymbologyApi.setColorScheme('YlGnBu')}>
                         {
                             colorset1.map((d, i) => {
                                 return (
@@ -43,7 +44,7 @@ const ControlPanel2 = (props: ControlPanelProps) => {
                             })
                         }
                         </div>
-                        <div className={Styles.colorband} onClick={() => setColorScheme('YlOrRd')}>
+                        <div className={Styles.colorband} onClick={() => SymbologyApi.setColorScheme('YlOrRd')}>
                         {
                             colorset2.map((d, i) => {
                                 return (
@@ -53,7 +54,7 @@ const ControlPanel2 = (props: ControlPanelProps) => {
                             })
                         }
                         </div>
-                        <div className={Styles.colorband} onClick={() => setColorScheme('RdPu')}>
+                        <div className={Styles.colorband} onClick={() => SymbologyApi.setColorScheme('RdPu')}>
                         {
                             colorset3.map((d, i) => {
                                 return (
