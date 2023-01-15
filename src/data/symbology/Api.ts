@@ -14,9 +14,6 @@ const Api = {
     setDataArray: (dataArray: number[]) => {
         store.dispatch(SymbologyActions.setDataArray(dataArray));
     },
-    updateParameter: (newParam) => {
-        store.dispatch(SymbologyActions.setParameter(newParam))
-    }
     // setDomain: () => {
     //     store.dispatch(SymbologyActions.setDomain());
     // },

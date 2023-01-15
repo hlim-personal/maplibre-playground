@@ -7,8 +7,11 @@ import { useSelector } from 'react-redux';
 import { MapStyle } from './MapStyle';
 import GeoApi from '../../data/geo/Api';
 import { libreDataState } from '../../data/geo/Reducer';
-import _ from 'lodash'
+import { numClassesState, currentClassificationState, colorSchemeState, domainState, colorState } from '../../data/symbology/Reducer';
+import SymbologyApi from '../../data/symbology/Api';
+import { scaleThreshold } from 'd3-scale';
 import ControlPanel from './ControlPanel/ControlPanel';
+import ControlPanel2 from './ControlPanel/ControlPanel2';
 
 interface IPopupData {
     label: string;
@@ -28,9 +31,14 @@ const MapLibreComponent = () => {
     const [popupData, setPopupData] = useState<IPopupData | null>(null);
     const data = useSelector(libreDataState);
     const [componentData, setComponentData] = useState(null)
-    const [displayProperty, setDisplayProperty] = useState('Type');
+    const [displayProperty, setDisplayProperty] = useState('CommissionDate');
     const [symbology, setSymbology] = useState(null);
     const equipmentLayerId = 'equipmentLayer';
+    const numClasses = useSelector(numClassesState)
+    const currentClassification = useSelector(currentClassificationState)
+    const colorScheme = useSelector(colorSchemeState)
+    const domain = useSelector(domainState)
+    const colors = useSelector(colorState)
     
     const getRandomColor = () => {
         const letters = '0123456789ABCDEF';
@@ -40,6 +48,18 @@ const MapLibreComponent = () => {
         }
         return color;
     }
+
+    function monthsBeforeNow(date) {
+        var pastDate = new Date(date);
+        var currentDate = new Date();
+        var timeDiff = currentDate.getTime() - pastDate.getTime();
+        var monthDiff = timeDiff / (1000 * 3600 * 24 * 30);
+        return Math.floor(monthDiff);
+      }
+      
+      const COLOR_SCALE: any = scaleThreshold<number, number[]>()
+        .domain(domain)
+        .range(colors);
 
     useEffect(() => {
         if (!data) {
@@ -51,37 +71,59 @@ const MapLibreComponent = () => {
 
     useEffect(() => {
         if (!!data) {
-            const uniqueCategories = data.features.map((item:any) => item.properties[displayProperty])
-                .filter((value: any, index, self) => self.indexOf(value) === index );
-                
-            const symbologyArr = uniqueCategories.map((category: string) => {
-                const color = getRandomColor();
-                return (
-                    {
-                        category: category,
-                        color: color
-                    }
-                )
-            })
-            setSymbology(symbologyArr)
-                
-            const updatedFeatures = data.features.map((d:any) => {
-                const colorIndex = symbologyArr.findIndex((element : { category: string, color: string}) => {
-                    return (element.category === d.properties.Type)
+            if (displayProperty === 'Type') {
+                const uniqueCategories = data.features.map((item:any) => item.properties[displayProperty])
+                    .filter((value: any, index, self) => self.indexOf(value) === index );
+                    
+                const symbologyArr = uniqueCategories.map((category: string) => {
+                    const color = getRandomColor();
+                    return (
+                        {
+                            category: category,
+                            color: color
+                        }
+                    )
                 })
+                setSymbology(symbologyArr)
 
-                const updatedProperties = {...d.properties, symbology: symbologyArr[colorIndex].color}
+                const updatedFeatures = data.features.map((d:any) => {
+                    const colorIndex = symbologyArr.findIndex((element : { category: string, color: string}) => {
+                        return (element.category === d.properties.Type)
+                    })
+    
+                    const updatedProperties = {...d.properties, symbology: symbologyArr[colorIndex].color}
+                
+                    return (
+                        {
+                            ...d,
+                            properties: updatedProperties
+                        }
+                    )
+                })
+                setComponentData({...data, features: updatedFeatures})
+
+            } else if ( displayProperty === "CommissionDate" ) {
+                const timeArr = data.features.map((item:any) => monthsBeforeNow(item.properties[displayProperty]))
+                SymbologyApi.setDataArray(timeArr)
+
+                const updatedFeatures = data.features.map((d:any) => {
+                    const color = COLOR_SCALE(monthsBeforeNow(d.properties[displayProperty]))
+                    const updatedProperties = {...d.properties, symbology: color}
+                
+                    return (
+                        {
+                            ...d,
+                            properties: updatedProperties
+                        }
+                    )
+                })
+                setComponentData({...data, features: updatedFeatures})
+
+            }
+                
             
-                return (
-                    {
-                        ...d,
-                        properties: updatedProperties
-                    }
-                )
-            })
-            setComponentData({...data, features: updatedFeatures})
         }
-    }, [data])
+    }, [data, numClasses, currentClassification, colorScheme, displayProperty])
 
     const getBoundingBoxFromMouseEvent = (e: MapLayerMouseEvent, radius?: number): [PointLike, PointLike] => {
         let extension = radius ? radius : 2.5;
@@ -118,7 +160,8 @@ const MapLibreComponent = () => {
             flexGrow: 1
         }}>
             {componentData &&
-                <ControlPanel displayProperty={displayProperty} componentData={componentData} setComponentData={setComponentData} symbology={symbology}/>
+                // <ControlPanel displayProperty={displayProperty} componentData={componentData} setComponentData={setComponentData} symbology={symbology}/>
+                <ControlPanel2/>
             }
             <Map
                 mapStyle={MapStyle}

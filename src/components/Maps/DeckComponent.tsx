@@ -14,7 +14,7 @@ import { MapStyle } from './MapStyle';
 import GeoApi from '../../data/geo/Api';
 import { deckDataState } from '../../data/geo/Reducer';
 import SymbologyApi from '../../data/symbology/Api';
-import { colorSchemeState, colorsState, currentClassificationState, dataArrayState, domainState, numClassesState } from '../../data/symbology/Reducer';
+import { colorSchemeState, currentClassificationState, dataArrayState, numClassesState, domainState, colorState } from '../../data/symbology/Reducer';
 
 const DeckComponent = () => {
     const mapRef = useRef<MapRef>(null);
@@ -27,15 +27,15 @@ const DeckComponent = () => {
     }
 
     const rawData = useSelector(deckDataState);
+    const [data, setData] = useState<any>(null);
     const numClasses = useSelector(numClassesState);
     const colorScheme = useSelector(colorSchemeState);
     const currentClassification = useSelector(currentClassificationState);
-    const domain = useSelector(domainState);
-    const colors = useSelector(colorsState);
     const dataArray = useSelector(dataArrayState);
-    const [data, setData] = useState<any>(null);
+    const domain = useSelector(domainState);
+    const colors = useSelector(colorState);
     const [displayedFeature, setDisplayedFeature] = useState<string>('total_amount');
-    console.log(numClasses, colorScheme, currentClassification, dataArray);
+    
     // const [numClasses, setNumClasses] = useState<number>(8);
     // const [colorScheme, setColorScheme] = useState<string>('YlOrRd');
     // const [currentClassification, setCurrentClassification] = useState<string>('stdDeviation');
@@ -97,8 +97,8 @@ const DeckComponent = () => {
     }, [rawData])
 
     useEffect(() => {
-        if (!!rawData) {
-            const featureArr = rawData.map(d => d[displayedFeature]);
+        if (!!data) {
+            const featureArr = data.features.map(d => d.properties.total);
             SymbologyApi.setDataArray(featureArr)
             // SymbologyApi.setDomain()
             // const series1 = new geostats(featureArr);
@@ -106,7 +106,7 @@ const DeckComponent = () => {
             // const intBuckets = buckets.map(d => Math.floor(d));
             // setDomain(buckets);
         }
-    }, [rawData, currentClassification])
+    }, [data])
 
     const dataLayer = useMemo(() => {
         if (!data) {

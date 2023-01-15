@@ -18,12 +18,12 @@ const ControlPanel2 = () => {
     const colorset2 = colorbrewer['YlOrRd'][9];
     const colorset3 = colorbrewer['RdPu'][9];
 
-    const handleChange = (e: any) => {
-        if (e.target.name === 'numClasses') {
-            SymbologyApi.setNumClasses(Number(e.target.value))
-        } else if (e.target.name === 'classification') {
-            SymbologyApi.setCurrentClassification(e.target.value)
-        }
+    const handleNumClassesChange = (e: any) => {
+        SymbologyApi.setNumClasses(Number(e.target.value))
+    }
+
+    const handleClassificationChange = (e: any) => {
+        SymbologyApi.setCurrentClassification(e.target.value)
     }
 
     return (
@@ -66,13 +66,13 @@ const ControlPanel2 = () => {
                         </div>
                     </div>
                     <div className={Styles.feature}>Number of data classes:</div>
-                    <select name="numClasses" onChange={handleChange}>
+                    <select name="numClasses" onChange={handleNumClassesChange}>
                         <option value="2">3</option>
                         <option value="5">6</option>
                         <option value="8">9</option>
                     </select>
                     <div className={Styles.feature}>Classification Method:</div>
-                    <select name="classification" onChange={handleChange}>
+                    <select name="classification" onChange={handleClassificationChange}>
                         <option value="stdDeviation">Standard Deviation</option>
                         <option value="eqInterval">Equal Interval</option>
                         <option value="quantile">Quantile</option>
