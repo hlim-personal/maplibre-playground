@@ -14,6 +14,13 @@ svg {
     overflow: visible;
 }
 
+.chart {
+    position: absolute;
+    width: 920px;
+    height: 800px;
+    overflow: visible;
+}
+
 path.area {
     overflow: visible
 }

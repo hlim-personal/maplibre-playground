@@ -4,15 +4,17 @@ import { chartCartesian } from '@d3fc/d3fc-chart';
 import { extentLinear, extentTime } from '@d3fc/d3fc-extent';
 import { randomGeometricBrownianMotion } from '@d3fc/d3fc-random-data';
 import * as fc from '@d3fc/d3fc-series';
+import { webglFillColor } from '@d3fc/d3fc-webgl';
 import { render } from '@testing-library/react';
 import * as d3 from 'd3';
 import _isNil from 'lodash/isNil';
 import Styles from '../D3Graph/D3Graph.module.css';
 
 
-const D3FCGraphPractice = () => {
+const D3FCScatter = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const brushContainerRef = useRef<SVGSVGElement>(null);
+    const chartRef = useRef<HTMLDivElement>(null);
     const prng = d3.randomNormal();
     const data = d3.range(2000000).map(d => ({
         x: prng(),
@@ -23,6 +25,9 @@ const D3FCGraphPractice = () => {
         const { r, g, b, opacity }: any = d3.color(color)?.rgb();
         return [r / 255, g / 255, b / 255, opacity];
     };
+    const iterateElements = (selector, fn) => [].forEach.call(document.querySelectorAll(selector), fn);
+
+
 
     useEffect(() => {
         if (data) {
@@ -36,7 +41,8 @@ const D3FCGraphPractice = () => {
         console.log(data.length)
         const xScale = d3.scaleLinear().domain([-5, 5]).range([0, width]);
         const yScale = d3.scaleLinear().domain([-5, 5]).range([height, 0]);
-
+        const valueFill = d => webglColor(colorScale(d.y));
+        const fillColor = webglFillColor().value(valueFill).data(data);
         const canvasgl = d3.select(canvasRef.current).node();
 
         if (canvasgl !== null) {
@@ -47,12 +53,10 @@ const D3FCGraphPractice = () => {
 
         const webglSerires = fc
             .seriesWebglPoint()
-            // .xScale(xScale)
-            // .yScale(yScale)
             .crossValue((d) => d.x)
             .mainValue((d) => d.y)
-            .size(2);
-        // .context(gl);
+            .size(1)
+            .decorate(program => fillColor(program));
 
         const series = fc
             .seriesWebglMulti()
@@ -76,10 +80,11 @@ const D3FCGraphPractice = () => {
                 const y = yScale.invert(d3.pointer(event)[1]);
                 const radius = Math.abs(x - xScale.invert(d3.pointer(event)[0] - 20));
                 const closestDatum = quadtree.find(x, y, radius);
-                console.log(closestDatum)
-
+                console.log(closestDatum);
 
             })
+
+
 
 
     }
@@ -88,10 +93,11 @@ const D3FCGraphPractice = () => {
         <div className={Styles.container} >
             <canvas ref={canvasRef} ></canvas>
             <svg ref={brushContainerRef} ></svg>
+            {/* <div ref={chartRef} className={Styles.chart}></div> */}
         </div>
     )
 }
 
-export default D3FCGraphPractice
+export default D3FCScatter
 
 
