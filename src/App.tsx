@@ -2,6 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import store from './services/Store';
+import { ChartView } from './views/Chart';
 import DeckView from './views/Deck';
 import IndexView from './views/Index';
 import MapLibreView from './views/MapLibre';
@@ -11,9 +12,10 @@ function App() {
         <Provider store={store}>
             <BrowserRouter>
                 <Routes>
-                    <Route path='/' element={<IndexView />} />
+                    {/* <Route path='/' element={<IndexView />} />
                     <Route path='/maplibre' element={<MapLibreView />} />
-                    <Route path='/deck' element={<DeckView />} />
+                    <Route path='/deck' element={<DeckView />} /> */}
+                    <Route path='/' element={<ChartView />} />
                 </Routes>
             </BrowserRouter>
         </Provider>
