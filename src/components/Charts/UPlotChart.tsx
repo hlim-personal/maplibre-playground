@@ -1,9 +1,9 @@
 import React from 'react';
 import uPlot, { Plugin } from 'uplot';
 import UplotReact from 'uplot-react';
+import dummyData16 from '../../data/charts/dummyData16.json';
 import '../../uplot.css';
 // import dummyData2m from '../../data/charts/dummyData2m.json';
-// import dummyDataSmall from '../../data/charts/dummyDataSmall.json';
 
 export function test(e): any | null {
     const event = e();
@@ -28,11 +28,11 @@ export const UPlotChart = () => {
     const values: number[] = [];
     /* const bigData: IData[] = dummyData2m as [IData];
     bigData.forEach((row) => { */
-    // dummyDataSmall.forEach((row) => {
-    //     const data = new Date(row.dateTime).getTime() / 1000;
-    //     arryTimestamps.push(data);
-    //     values.push(row.value);
-    // });
+    dummyData16.forEach((row) => {
+        const data = new Date(row.dateTime).getTime() / 1000;
+        arryTimestamps.push(data);
+        values.push(row.value);
+    });
     const data = [new Float32Array(arryTimestamps), new Float32Array(values)];
 
 
@@ -76,8 +76,10 @@ export const UPlotChart = () => {
         series: [
             {},
             {
+                path: "point",
                 label: "value",
                 stroke: "red",
+                // points: "blue",
                 size: 5,
                 width: 1,
             }
