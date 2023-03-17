@@ -50,8 +50,8 @@ const D3Graph = () => {
     const buildGraph = (data) => {
         const svg = d3.select(svgRef.current);
         const margin = { top: 10, right: 30, bottom: 30, left: 50 };
-        const width = 920 - margin.left - margin.right;
-        const height = 800 - margin.top - margin.bottom;
+        const width = 800 - margin.left - margin.right;
+        const height = 300 - margin.top - margin.bottom;
 
         svg
             .attr('width', width + margin.left + margin.right)
@@ -76,25 +76,23 @@ const D3Graph = () => {
                 .y1((d: any) => yScale(d))
             )
 
-        const brushed = (event) => {
-            const extent = event.selection;
-            console.log(extent);
-        }
+        // const brushed = (event) => {
+        //     const extent = event.selection;
+        //     console.log(extent);
+        // }
 
-        const brush = d3.brushX()
-            .extent([[0, 0], [width, height]])
-            .on('end', brushed);
+        // const brush = d3.brushX()
+        //     .extent([[0, 0], [width, height]])
+        //     .on('end', brushed);
 
-        line.append('g')
-            .attr('class', 'brush')
-            .call(brush);
+        // line.append('g')
+        //     .attr('class', 'brush')
+        //     .call(brush);
 
     }
 
     return (
-        <div className={Styles.container}>
-            <svg ref={svgRef} />
-        </div>
+        <svg ref={svgRef} />
     )
 }
 

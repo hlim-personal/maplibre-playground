@@ -10,9 +10,8 @@ import _isNil from 'lodash/isNil';
 import Styles from '../D3Graph/D3Graph.module.css';
 
 
-const D3FCGraphPractice = () => {
+const D3FCGraphPractice = ({ height, width }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const brushContainerRef = useRef<SVGSVGElement>(null);
     const prng = d3.randomNormal();
     const data = d3.range(2000000).map(d => ({
         x: prng(),
@@ -31,8 +30,6 @@ const D3FCGraphPractice = () => {
     }, [data])
 
     const buildGraph = (data: any) => {
-        const width = 920;
-        const height = 800;
         console.log(data.length)
         const xScale = d3.scaleLinear().domain([-5, 5]).range([0, width]);
         const yScale = d3.scaleLinear().domain([-5, 5]).range([height, 0]);
@@ -45,10 +42,8 @@ const D3FCGraphPractice = () => {
         }
         const gl = canvasgl?.getContext('webgl');
 
-        const webglSerires = fc
+        const webglSeries = fc
             .seriesWebglPoint()
-            // .xScale(xScale)
-            // .yScale(yScale)
             .crossValue((d) => d.x)
             .mainValue((d) => d.y)
             .size(2);
@@ -58,37 +53,14 @@ const D3FCGraphPractice = () => {
             .seriesWebglMulti()
             .xScale(xScale)
             .yScale(yScale)
-            .series([webglSerires])
+            .series([webglSeries])
             .context(gl);
 
         series(data);
-
-        const quadtree = d3.quadtree()
-            .x((d: any) => d.x)
-            .y((d: any) => d.y)
-            .addAll(data);
-
-        const svg = d3.select(brushContainerRef.current)
-            .attr('width', width)
-            .attr('height', height)
-            .on('click', (event: any) => {
-                const x = xScale.invert(d3.pointer(event)[0]);
-                const y = yScale.invert(d3.pointer(event)[1]);
-                const radius = Math.abs(x - xScale.invert(d3.pointer(event)[0] - 20));
-                const closestDatum = quadtree.find(x, y, radius);
-                console.log(closestDatum)
-
-
-            })
-
-
     }
 
     return (
-        <div className={Styles.container} >
-            <canvas ref={canvasRef} ></canvas>
-            <svg ref={brushContainerRef} ></svg>
-        </div>
+        <canvas ref={canvasRef} height={height} width={width}></canvas>
     )
 }
 
